@@ -17,7 +17,12 @@ Este é um bot simples para Discord que usa o Azure OpenAI para responder a perg
    cd discord-azure-bot
 ```
 
-## Estrutura de repositório:
+## Estrutura
+
+- `src/`: Contém o código-fonte do bot e suas funcionalidades.
+- `logs/`: Diretório onde são armazenados os arquivos de log das mensagens.
+- `.env`: Arquivo de variáveis de ambiente (não deve ser comitado).
+- `requirements.txt`: Arquivo com as dependências do projeto.
 
 ```shell
 discord-bot/
