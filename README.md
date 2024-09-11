@@ -1,6 +1,34 @@
+
 # Discord Azure Bot
 
-Este é um bot simples para Discord que usa o Azure OpenAI para responder a perguntas.
+## Visão Geral
+
+O **Discord Azure Bot** é um bot inteligente projetado para interagir com os usuários no Discord de maneira dinâmica e personalizada. Utilizando a tecnologia Azure OpenAI, o bot não apenas responde às mensagens dos usuários, mas também analisa o comportamento e a personalidade de cada um, criando uma experiência única para cada interação.
+
+## Funcionalidades
+
+### Interação Personalizada
+
+- **Resposta Adaptativa**: O bot analisa as últimas 30 mensagens de cada usuário e usa essa análise para adaptar suas respostas. Isso significa que o bot pode responder de maneira diferente para cada usuário, ajustando seu tom e estilo de comunicação com base na interação passada. Assim, o mesmo usuário pode receber respostas mais elegantes, mais diretas, ou até mesmo nenhuma resposta, dependendo do contexto.
+
+### Armazenamento e Análise de Mensagens
+
+- **Armazenamento de Mensagens**: O bot armazena todas as mensagens enviadas pelos usuários em um banco de dados. Isso é usado para entender melhor o estilo de comunicação e o comportamento de cada usuário.
+- **Análise de Personalidade**: Através da análise das últimas 30 mensagens, o bot cria um perfil de personalidade para cada usuário. Esta análise é usada para personalizar as respostas e garantir que as interações sejam únicas e relevantes.
+
+### Regra das 5 Mensagens
+
+- **Interação a Cada 5 Mensagens**: O bot segue uma regra de interação que considera as últimas 5 mensagens no chat. Isso garante que o bot não responda a todas as mensagens, mas apenas a cada 5 mensagens, mantendo a conversa mais fluida e menos intrusiva.
+
+## Como Funciona
+
+1. **Análise Contínua**: O bot monitora as mensagens enviadas pelos usuários e armazena essas mensagens para análise futura.
+2. **Geração de Resposta**: Com base na análise das últimas 30 mensagens, o bot gera uma resposta personalizada para cada usuário.
+3. **Interação Específica**: O bot responde a cada 5 mensagens no chat, utilizando as últimas 5 mensagens para determinar a melhor forma de interagir.
+
+
+---
+
 
 ## Requisitos
 
@@ -86,6 +114,8 @@ discord-bot/
 │   ├── bot.py                 # Arquivo principal do bot que conecta tudo
 │   ├── openai_utils.py        # Módulo de interação com Azure OpenAI
 │   ├── message_logger.py      # Módulo responsável por registrar as mensagens
+│   └── discord_utils.py       # Módulo de utilidades para interagir com a API do Discord
+│   └── temperature_utils.py   # Módulo de utilidades para calcular a temperatura de resposta
 │
 ├── logs/                      # Diretório onde serão salvos os arquivos de log em JSON
 │
