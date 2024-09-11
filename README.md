@@ -8,13 +8,67 @@ Este é um bot simples para Discord que usa o Azure OpenAI para responder a perg
 - Uma conta de Discord e um token de bot
 - Uma conta Azure com Azure OpenAI
 
-## Configuração
+## Deploy Manual
 
 1. Clone este repositório:
 
 ```bash
-   git clone https://github.com/yourusername/discord-azure-bot.git
-   cd discord-azure-bot
+git clone https://github.com/yourusername/discord-azure-bot.git
+cd discord-azure-bot
+
+python -m venv venv
+source venv/bin/activate  # No Windows use `venv\Scripts\activate`
+pip install -r requirements.txt
+```
+
+2. Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```bash
+DISCORD_TOKEN=seu_discord_token_aqui
+GUILD_ID=seu_guild_id
+CHANNEL_ID=seu_channel_id
+AZURE_OPENAI_API_KEY=sua_chave_openai_aqui
+AZURE_OPENAI_ENDPOINT=seu_endpoint_openai
+AZURE_OPENAI_DEPLOYMENT=nome_do_seu_deployment
+```
+
+4. Execute o bot:
+
+```bash
+python src/bot.py
+```
+## Deploy com Docker
+
+1. Clone este repositório:
+
+```bash
+git clone https://github.com/yourusername/discord-azure-bot.git
+cd discord-azure-bot
+```
+
+2. Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```bash
+DISCORD_TOKEN=seu_discord_token_aqui
+GUILD_ID=seu_guild_id
+CHANNEL_ID=seu_channel_id
+AZURE_OPENAI_API_KEY=sua_chave_openai_aqui
+AZURE_OPENAI_ENDPOINT=seu_endpoint_openai
+AZURE_OPENAI_DEPLOYMENT=nome_do_seu_deployment
+```
+
+3. Construa a imagem Docker:
+
+- Se estiver usando apenas o Dockerfile, execute:
+```bash
+docker build -t discord-azure-bot .
+docker run -d --name discord-azure-bot --env-file .env discord-azure-bot
+
+```
+
+- Se estiver usando o Docker Compose, execute:
+```bash
+docker-compose up -d
 ```
 
 ## Estrutura
