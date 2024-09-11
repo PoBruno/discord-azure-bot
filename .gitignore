@@ -13,4 +13,7 @@ Thumbs.db
 __pycache__/
 *.pyc
 
+# Ignorar arquivos de ambiente virtual
 venv/
+
+
