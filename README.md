@@ -1,6 +1,19 @@
 
 # Discord Azure Bot
 
+# Sumário
+
+- [Visão Geral](#visão-geral)
+- [Funcionalidades](#funcionalidades)
+  - [Interação Personalizada](#interação-personalizada)
+  - [Armazenamento e Análise de Mensagens](#armazenamento-e-análise-de-mensagens)
+  - [Regra das 5 Mensagens](#regra-das-5-mensagens)
+- [Como Funciona](#como-funciona)
+- [Requisitos](#requisitos)
+- [Deploy Manual](#deploy-manual)
+- [Deploy com Docker](#deploy-com-docker)
+- [Estrutura](#estrutura)
+
 ## Visão Geral
 
 O **Discord Azure Bot** é um bot inteligente projetado para interagir com os usuários no Discord de maneira dinâmica e personalizada. Utilizando a tecnologia Azure OpenAI, o bot não apenas responde às mensagens dos usuários, mas também analisa o comportamento e a personalidade de cada um, criando uma experiência única para cada interação.
@@ -25,9 +38,6 @@ O **Discord Azure Bot** é um bot inteligente projetado para interagir com os us
 1. **Análise Contínua**: O bot monitora as mensagens enviadas pelos usuários e armazena essas mensagens para análise futura.
 2. **Geração de Resposta**: Com base na análise das últimas 30 mensagens, o bot gera uma resposta personalizada para cada usuário.
 3. **Interação Específica**: O bot responde a cada 5 mensagens no chat, utilizando as últimas 5 mensagens para determinar a melhor forma de interagir.
-
-
----
 
 
 ## Requisitos
