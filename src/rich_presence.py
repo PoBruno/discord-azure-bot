@@ -1,37 +1,38 @@
-# src/rich_presence.py
+# rich_presence.py
 
-import os
+import discord
 import asyncio
-from pypresence import AioPresence
-from dotenv import load_dotenv  
+import os
+from discord.ext import tasks
 
-# Carregar variáveis de ambiente  
-load_dotenv()  
-
-CLIENT_ID = os.getenv('CLIENT_ID')
-
-# Configurar o Rich Presence
+# Função para configurar o Rich Presence
 async def setup_presence():
-    """Configura e conecta o Presence do Discord."""
-    rpc = AioPresence(CLIENT_ID)  # Usar AioPresence em vez de Presence
-    await rpc.connect()  # Conectar ao RPC do Discord
+    # Criar uma instância do RichPresence
+    rpc = discord.Game(name="Música 🎵", type=discord.ActivityType.listening)
     return rpc
-    print(rcp)
 
-async def update_presence(rpc):
-    """Atualiza a presença do bot no Discord."""
-    try:
-        # Atualizar a presença com parâmetros básicos
-        await rpc.update(
-            state="Em desenvolvimento",
-            details="Bot Discord em funcionamento",
-            large_image="image_key",  # Substitua por uma chave de imagem válida
-            large_text="Texto grande",  # Texto exibido ao passar o mouse sobre a imagem
-            small_image="small_image_key",  # Substitua por uma chave de imagem válida
-            small_text="Texto pequeno"  # Texto exibido ao passar o mouse sobre a imagem pequena
-        )
-        
-        print("Presença atualizada com sucesso!")
-    except Exception as e:
-        print(f"Erro ao atualizar presença: {e}")
+# Função para atualizar o Rich Presence de forma periódica
+@tasks.loop(minutes=5)  # Atualiza a cada 5 minutos
+async def update_presence(rpc, bot):
+    # Exemplo: alternar entre diferentes atividades
+    activities = [
+        discord.Game(name="🎮 Jogando com amigos"),
+        discord.Streaming(name="🎧 Mixando sons", url="https://twitch.tv/exemplo"),
+        discord.Activity(type=discord.ActivityType.watching, name="🎬 Assistindo a série")
+    ]
 
+    # Escolher uma atividade aleatória da lista
+    current_activity = activities[asyncio.get_event_loop().time() % len(activities)]
+
+    # Atualizar a presença do bot
+    await bot.change_presence(activity=current_activity)
+    print(f"Rich Presence atualizado para: {current_activity.name}")
+
+# Função para iniciar a tarefa de atualização do Rich Presence
+def start_rich_presence_update(bot):
+    # Setup inicial do Rich Presence
+    rpc = asyncio.run(setup_presence())
+
+    # Iniciar a tarefa de atualização recorrente
+    update_presence.start(rpc, bot)
+    print("Tarefa de atualização do Rich Presence iniciada.")

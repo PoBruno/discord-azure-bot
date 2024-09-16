@@ -9,6 +9,8 @@ COPY requirements.txt requirements.txt
 
 # Instale as dependências do projeto
 RUN pip install --no-cache-dir -r requirements.txt
+RUN sudo apt update
+RUN sudo apt install ffmpeg
 
 # Copie o restante do código fonte para o container
 COPY src/ src/

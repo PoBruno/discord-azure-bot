@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 
 MAX_MESSAGES_PER_USER = 30
-MAX_MESSAGES_GLOBAL = 5
+MAX_MESSAGES_GLOBAL = 10
 
 def log_message(message):
     # Cria o nome do arquivo JSON com o nome do autor

@@ -56,6 +56,7 @@ cd discord-azure-bot
 
 python -m venv venv
 source venv/bin/activate  # No Windows use `venv\Scripts\activate`
+$env:PYTHONPATH = "."
 pip install -r requirements.txt
 ```
 

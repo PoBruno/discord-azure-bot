@@ -16,4 +16,4 @@ __pycache__/
 # Ignorar arquivos de ambiente virtual
 venv/
 
-
+/music/youtube/*

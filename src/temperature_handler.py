@@ -50,8 +50,8 @@ def handle_temperature_command(author):
     }}
 }}
 
-Você irá realizar uma analize de personalidade do historico de mensagens de user_messages e ultilizar o json_tamplate como modelo para preencher cada valor `${[]}` do json de acordo com a analise.
-a resposta tem que ser no formato json json_tamplate preenchido com os valores de 0 a 10 e uma descrição breve para cada valor.
+1. Você irá realizar uma profunda analize de personalidade do histórico de mensagens de `user_messages` e ultilizar o `json_tamplate` como modelo para preencher cada valor `${[]}` do json de acordo com a analise.
+a resposta tem que ser no formato json json_tamplate preenchido com os valores de 0 a 10 e uma descrição profunda de cada valor.
 '''
 
 # Obtém a resposta do OpenAI
@@ -86,3 +86,4 @@ a resposta tem que ser no formato json json_tamplate preenchido com os valores d
 
     else:
         print(f"Arquivo {file_name} não encontrado para o usuário {author}.")
+
