@@ -16,7 +16,7 @@ async def text_to_audio(text, filename):
         # Gera o áudio a partir do texto
         audio = client.generate(
             text=text,
-            voice="Eric",  # Defina a voz desejada
+            voice="Batman",  # Defina a voz desejada
             model="eleven_multilingual_v2"  # Modelo de voz desejado
         )
         with open(f'./music/{filename}', 'wb') as f:

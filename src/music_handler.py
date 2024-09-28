@@ -72,29 +72,27 @@ def add_to_queue(title, url):
     queue.append({'title': title, 'url': url, 'fila': fila})
     save_queue(queue)
 
-# Remover a música da fila após terminar de tocar e atualizar os valores de fila
-def remove_from_queue():
-    queue = load_queue()
-    
-    if queue:
-        # Remove a primeira música (a que acabou de tocar)
-        queue.pop(0)
-        
-        # Atualizar o valor da fila para os itens restantes
-        for i, item in enumerate(queue):
-            item['fila'] = i + 1
-            
-    save_queue(queue)
-
 # Função para tocar a próxima música na fila
 async def play_next(ctx):
     queue = load_queue()
 
-    if queue and not ctx.voice_client.is_playing():
-        next_song = queue[0]
-        player = await YTDLSource.from_url(next_song['url'], loop=ctx.bot.loop)
-        ctx.voice_client.play(player, after=lambda e: asyncio.run_coroutine_threadsafe(on_song_end(ctx), ctx.bot.loop))
-        await ctx.send(f'Tocando: {player.title}')
+    # Se não houver músicas na fila
+    if not queue:
+        await ctx.send("A fila de músicas está vazia.")
+        return
+
+    # Pegar a primeira música na fila
+    next_song = queue[0]
+
+    try:
+        async with ctx.typing():
+            player = await YTDLSource.from_url(next_song['url'], loop=ctx.bot.loop)
+            ctx.voice_client.play(player, after=lambda e: asyncio.run_coroutine_threadsafe(on_song_end(ctx), ctx.bot.loop))
+
+        await ctx.send(f"Tocando agora: {next_song['title']}")
+    except Exception as e:
+        await ctx.send(f"Erro ao tentar tocar a música: {str(e)}")
+        print(f"Erro ao tentar tocar a próxima música: {str(e)}")
 
 # Função chamada quando uma música termina
 async def on_song_end(ctx):

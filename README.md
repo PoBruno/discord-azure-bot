@@ -142,3 +142,98 @@ discord-bot/
 
 
 
+```mermaid
+graph TD
+    subgraph "Discord Bot"
+        A[User Input] -->|1| B[bot.on_message]
+        B -->|2| C[log_message]
+        B -->|3| D[generate_response]
+        D -->|4| E[play_music]
+        D -->|5| F[text_to_audio]
+        B -->|6| G[handle_temperature_command]
+        H[bot.event] -->|7| I[update_presence]
+    end
+
+    subgraph "OpenAI Integration"
+        D -->|3.1| J[AzureOpenAI client]
+        J -->|3.2| K[assistant.create]
+        K -->|3.3| L[thread.create]
+        L -->|3.4| M[thread.messages.create]
+        M -->|3.5| N[thread.runs.create]
+        N -->|3.6| O[thread.runs.retrieve]
+        O -->|3.7| P[thread.messages.list]
+    end
+
+    subgraph "Music Handling"
+        E -->|4.1| Q[YTDLSource.from_url]
+        Q -->|4.2| R[voice_client.play]
+        S[play_next] -->|4.3| T[load_queue]
+        S -->|4.4| U[remove_from_queue]
+    end
+
+    subgraph "Audio Processing"
+        F -->|5.1| V[ElevenLabs client]
+        V -->|5.2| W[client.generate]
+    end
+
+    subgraph "Temperature Handling"
+        G -->|6.1| X[read_temperature_file]
+        G -->|6.2| Y[generate_response]
+        G -->|6.3| Z[write_temperature_file]
+    end
+
+    classDef discord fill:#7289DA,stroke:#5B6EAE,color:#FFFFFF
+    classDef openai fill:#412991,stroke:#2C1B5A,color:#FFFFFF
+    classDef music fill:#1DB954,stroke:#1A9E48,color:#FFFFFF
+    classDef audio fill:#FF6B6B,stroke:#CC5757,color:#FFFFFF
+    classDef temp fill:#4ECDC4,stroke:#45B7AE,color:#FFFFFF
+
+    class A,B,C,H,I discord
+    class D,J,K,L,M,N,O,P openai
+    class E,Q,R,S,T,U music
+    class F,V,W audio
+    class G,X,Y,Z temp
+
+    click B callback "bot.on_message###src/bot.py###@bot.event\nasync def on_message(message):"
+    click C callback "log_message###src/message_logger.py###def log_message(message):"
+    click D callback "generate_response###src/openai_utils.py###def generate_response(prompt):"
+    click E callback "play_music###src/music_handler.py###async def play_music(ctx, song_request):"
+    click F callback "text_to_audio###src/elevenlabs.py###async def text_to_audio(text, filename):"
+    click G callback "handle_temperature_command###src/temperature_handler.py###def handle_temperature_command(author):"
+    click I callback "update_presence###src/rich_presence.py###@tasks.loop(minutes=5)\nasync def update_presence(rpc, bot):"
+    click J callback "AzureOpenAI client###src/openai_utils.py###client = AzureOpenAI("
+    click Q callback "YTDLSource.from_url###src/music_handler.py###@classmethod\nasync def from_url(cls, url, *, loop=None, stream=False):"
+    click R callback "voice_client.play###src/music_handler.py###ctx.voice_client.play(player, after=lambda e: asyncio.run_coroutine_threadsafe(on_song_end(ctx), ctx.bot.loop))"
+    click S callback "play_next###src/music_handler.py###async def play_next(ctx):"
+    click T callback "load_queue###src/music_handler.py###def load_queue():"
+    click U callback "remove_from_queue###src/music_handler.py###def remove_from_queue():"
+    click V callback "ElevenLabs client###src/elevenlabs.py###client = ElevenLabs(api_key=API_KEY)"
+    click W callback "client.generate###src/elevenlabs.py###audio = client.generate("
+    click X callback "read_temperature_file###src/temperature_handler.py###with open(temperature_file_name, 'r', encoding='utf-8') as file:"
+    click Y callback "generate_response###src/temperature_handler.py###response = generate_response(prompt)"
+    click Z callback "write_temperature_file###src/temperature_handler.py###with open(temperature_file_name, 'w', encoding='utf-8') as file:"
+
+    click A_B edge_callback "User Input to bot.on_message###src/bot.py###if message.author == bot.user:"
+    click B_C edge_callback "bot.on_message to log_message###src/bot.py###log_message(message)"
+    click B_D edge_callback "bot.on_message to generate_response###src/bot.py###response = generate_response(prompt)"
+    click B_E edge_callback "bot.on_message to play_music###src/bot.py###await play_music(await bot.get_context(message), song_request)"
+    click B_F edge_callback "bot.on_message to text_to_audio###src/bot.py###await text_to_audio(text, filename)"
+    click B_G edge_callback "bot.on_message to handle_temperature_command###src/bot.py###handle_temperature_command(author)"
+    click D_J edge_callback "generate_response to AzureOpenAI client###src/openai_utils.py###client = AzureOpenAI("
+    click J_K edge_callback "AzureOpenAI client to assistant.create###src/openai_utils.py###assistant = client.beta.assistants.create("
+    click K_L edge_callback "assistant.create to thread.create###src/openai_utils.py###thread = client.beta.threads.create()"
+    click L_M edge_callback "thread.create to thread.messages.create###src/openai_utils.py###client.beta.threads.messages.create("
+    click M_N edge_callback "thread.messages.create to thread.runs.create###src/openai_utils.py###run = client.beta.threads.runs.create("
+    click N_O edge_callback "thread.runs.create to thread.runs.retrieve###src/openai_utils.py###run = client.beta.threads.runs.retrieve("
+    click O_P edge_callback "thread.runs.retrieve to thread.messages.list###src/openai_utils.py###messages = client.beta.threads.messages.list("
+    click E_Q edge_callback "play_music to YTDLSource.from_url###src/music_handler.py###player = await YTDLSource.from_url(next_song['url'], loop=ctx.bot.loop)"
+    click Q_R edge_callback "YTDLSource.from_url to voice_client.play###src/music_handler.py###ctx.voice_client.play(player, after=lambda e: asyncio.run_coroutine_threadsafe(on_song_end(ctx), ctx.bot.loop))"
+    click S_T edge_callback "play_next to load_queue###src/music_handler.py###queue = load_queue()"
+    click S_U edge_callback "play_next to remove_from_queue###src/music_handler.py###remove_from_queue()"
+    click F_V edge_callback "text_to_audio to ElevenLabs client###src/elevenlabs.py###client = ElevenLabs(api_key=API_KEY)"
+    click V_W edge_callback "ElevenLabs client to client.generate###src/elevenlabs.py###audio = client.generate("
+    click G_X edge_callback "handle_temperature_command to read_temperature_file###src/temperature_handler.py###with open(temperature_file_name, 'r', encoding='utf-8') as file:"
+    click G_Y edge_callback "handle_temperature_command to generate_response###src/temperature_handler.py###response = generate_response(prompt)"
+    click G_Z edge_callback "handle_temperature_command to write_temperature_file###src/temperature_handler.py###with open(temperature_file_name, 'w', encoding='utf-8') as file:"
+
+```

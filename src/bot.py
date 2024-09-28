@@ -9,7 +9,7 @@ from src.openai_utils import generate_response  # Função para gerar resposta d
 from src.message_logger import log_message  # Função para log de mensagens  
 from src.temperature_handler import handle_temperature_command  # Função para manipulação de temperatura  
 from src.rich_presence import setup_presence, update_presence, start_rich_presence_update  # Importar funções do rich_presence  
-from src.music_handler import play_music  # Função para tocar música  
+from src.music_handler import play_music, play_next # Importar funções de manipulação de música
 from src.elevenlabs import text_to_audio, delete_audio  
 from elevenlabs import VoiceSettings, play, save  
 from elevenlabs.client import ElevenLabs  
@@ -71,19 +71,19 @@ async def on_message(message):
             with open(temperature_file_name, 'r', encoding='utf-8') as file:  
                 temperature_data = json.load(file)  
     
-            prompt = f'''  
+            prompt = f'''
                 1. Você está participando do chat do Discord com seu grupo "Monga" e está interagindo com **{message.author}**  
                 Personalidade de **{message.author}**:  
                 ```{message.author}_personalidade  
                 {json.dumps(temperature_data, ensure_ascii=False)}  
-                ```  
+                ```
                 **{message.author}** mandou a mensagem:  
-                ```  
+                ```
                 {message.content}  
-                ```  
+                ```
                 2. Responda a mensagem de forma amigável e relevante para a personalidade de **{message.author}**.  
                 "Sempre que for solicitação de música apenas responder com o comando `!play <nome da música e autor>` SEM NENHUMA INFORMAÇÃO A MAIS."  
-                '''  
+                '''
         else:  
             # Prompt se não houver análise de temperatura  
             prompt = f'''  
@@ -109,7 +109,20 @@ async def on_message(message):
             print(f"Comando de música detectado: {song_request}")  
 
             # Chamar a função para tocar a música  
-            await play_music(await bot.get_context(message), song_request)  
+            await play_music(await bot.get_context(message), song_request)
+        
+        if "!next" in response:
+            await play_next()
+
+        if "!stop" in response:
+            #remover bot do chatvoice
+            voice_client = ctx.voice_client
+            if voice_client.is_playing():
+                voice_client.stop()
+                await ctx.send("Música parada.")
+            else:
+                await ctx.send("Não há música tocando.")
+
         else:  
             print(f"\n - - - Enviando resposta para o canal - - - \n")  
             await message.channel.send(response)  
@@ -173,7 +186,7 @@ async def on_message(message):
                 json.dump(global_logs, file, ensure_ascii=False, indent=4)  
 
             # Criar o prompt com base nos logs globais  
-            prompt_content = "\n".join(msg["content"] for msg in global_logs)  
+            prompt_content = "\n".join(msg["content"] for msg in global_logs) 
             prompt = f'''  
                 1. Você está participando do chat do Discord com seu grupo "Monga"  
                 Aqui estão as últimas mensagens no chat para contexto:  
@@ -200,7 +213,30 @@ async def play(ctx, *, url: str):
     print(f"Comando !play acionado por {ctx.author} com URL: {url}")  
 
     # Chamar a função de manipulação de música  
-    await play_music(ctx, url)  
+    await play_music(ctx, url)
+
+# Comando para parar a trocar de música
+@bot.command(name='stop')
+async def stop(ctx):
+    # Adicionar um log para verificar a execução do comando
+    print(f"Comando !stop acionado por {ctx.author}")
+
+    # Parar a música
+    voice_client = ctx.voice_client
+    if voice_client.is_playing():
+        voice_client.stop()
+        await ctx.send("Música parada.")
+    else:
+        await ctx.send("Não há música tocando.")
+
+# Comando para pular a música atual
+@bot.command(name='next')
+async def play_next(ctx):
+    # Adicionar um log para verificar a execução do comando
+    print(f"Comando !play_next acionado por {ctx.author}")
+
+    # Tocar a próxima música na fila
+    await play_next(ctx)
 
 # Eleven Labs  
 # Comando para gerar e tocar áudio  
@@ -239,7 +275,7 @@ async def falar(ctx, *, text: str):
             await asyncio.sleep(1)  
         print("Áudio terminado.")  
 
-    finally:  
+    finally:
         # Desconectar do canal de voz  
         print("Desconectando do canal de voz...")  
         await voice_client.disconnect()  
